@@ -1,0 +1,115 @@
+#################
+# Web Container #
+#################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: access-services-prod
+spec:
+  ports:
+  - name: "http"
+    port: 8088
+    targetPort: 8088
+  selector:
+    app: web
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: access-services-prod
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: joschi36/cargo-demo:latest
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+
+
+
+#########
+# REDIS #
+#########
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: access-services-prod
+spec:
+  ports:
+  - name: "6379"
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+  namespace: access-services-prod
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - args:
+        - redis-server
+        - --appendonly
+        - "yes"
+        image: redis
+        name: redis
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /data
+          name: redis-claim
+      restartPolicy: Always
+      volumes:
+      - name: redis-claim
+        emptyDir: {}
+
+
+
+###########
+# Ingress #
+###########
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web
+  namespace: access-services-prod
+spec:
+  rules:
+  - host: subtitletransformer.swisstxt.ch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web
+          servicePort: 80
