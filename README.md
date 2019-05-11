@@ -4,6 +4,11 @@
 
 This is a simple python flask application.
 
+Create pipenv Virtual Environment for application dependencies:
+```bash
+pipenv install
+```
+
 To run the application locally use:
 
 ```bash
