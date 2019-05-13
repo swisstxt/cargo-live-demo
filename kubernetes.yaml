@@ -36,7 +36,7 @@ spec:
       - name: web
         image: joschi36/cargo-demo:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8088
       restartPolicy: Always
 
 
@@ -112,4 +112,4 @@ spec:
       - path: /
         backend:
           serviceName: web
-          servicePort: 80
+          servicePort: 8088
