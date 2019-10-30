@@ -38,6 +38,9 @@ metadata:
 spec:
   strategy:
     type: Recreate
+  selector:
+    matchLabels:
+      app: web
   template:
     metadata:
       labels:
@@ -80,6 +83,9 @@ metadata:
   namespace: cargo-live-demo
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: redis
   strategy:
     type: Recreate
   template:
