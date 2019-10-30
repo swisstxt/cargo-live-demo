@@ -1,0 +1,74 @@
+#############
+# Namespace #
+#############
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cargo-live-demo
+
+
+
+#################
+# Web Container #
+#################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: cargo-live-demo
+spec:
+  ports:
+  - name: "http"
+    port: 8088
+    targetPort: 8088
+  selector:
+    app: web
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: web
+  name: web
+  namespace: cargo-live-demo
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: joschi36/cargo-demo:latest
+        ports:
+        - containerPort: 8088
+        env:
+        - name: NAME
+          value: Kubernetes
+      restartPolicy: Always
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web
+  namespace: cargo-live-demo
+  annotations:
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+spec:
+  rules:
+  - host: livedemo-cargo.swisstxt.ch
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: web
+          servicePort: 8088
