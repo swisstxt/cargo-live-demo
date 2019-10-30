@@ -1,3 +1,14 @@
+#############
+# Namespace #
+#############
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cargo-live-demo
+
+
+
 #################
 # Web Container #
 #################
@@ -8,7 +19,7 @@ metadata:
   labels:
     app: web
   name: web
-  namespace: access-services-prod
+  namespace: cargo-live-demo
 spec:
   ports:
   - name: "http"
@@ -23,7 +34,7 @@ metadata:
   labels:
     app: web
   name: web
-  namespace: access-services-prod
+  namespace: cargo-live-demo
 spec:
   strategy:
     type: Recreate
@@ -51,7 +62,7 @@ metadata:
   labels:
     app: redis
   name: redis
-  namespace: access-services-prod
+  namespace: cargo-live-demo
 spec:
   ports:
   - name: "6379"
