@@ -123,7 +123,7 @@ metadata:
   namespace: cargo-live-demo
 spec:
   rules:
-  - host: livedemo.stxt.media.int
+  - host: livedemo-cargo.swisstxt.ch
     http:
       paths:
       - path: /
