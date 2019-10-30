@@ -94,21 +94,33 @@ spec:
         app: redis
     spec:
       containers:
-      - args:
-        - redis-server
-        - --appendonly
-        - "yes"
-        image: redis
+      - image: bitnami/redis
         name: redis
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
         ports:
         - containerPort: 6379
         volumeMounts:
-        - mountPath: /data
+        - mountPath: /bitnami/redis/data
           name: redis-claim
       restartPolicy: Always
       volumes:
       - name: redis-claim
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: redis-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data
+spec:
+  storageClassName: nas-eco
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
 
 
 
@@ -121,6 +133,8 @@ kind: Ingress
 metadata:
   name: web
   namespace: cargo-live-demo
+  annotations:
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
 spec:
   rules:
   - host: livedemo-cargo.swisstxt.ch
