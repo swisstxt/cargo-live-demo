@@ -28,7 +28,7 @@ spec:
   selector:
     app: web
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -71,13 +71,13 @@ spec:
   selector:
     app: redis
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: redis
   name: redis
-  namespace: access-services-prod
+  namespace: cargo-live-demo
 spec:
   replicas: 1
   strategy:
@@ -114,10 +114,10 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: web
-  namespace: access-services-prod
+  namespace: cargo-live-demo
 spec:
   rules:
-  - host: subtitletransformer.swisstxt.ch
+  - host: livedemo.stxt.media.int
     http:
       paths:
       - path: /
